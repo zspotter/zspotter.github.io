@@ -1,1 +1,78 @@
-Fuzz
+<!DOCTYPE html>
+<html>
+<head>
+  <title>A patch of fuzz</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta property="og:image" content="http://zspotter.me/dia/fuzz/preview.png">
+  
+  <script type="text/javascript" src="bignumber.min.js"></script>
+  <script type="text/javascript" src="renderer.js"></script>
+
+  <link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+
+  <style>
+    body { font-family: "Roboto", Helvetica, sans-serif; }
+    h1 {
+      font-size: 2.5em;
+      font-weight: normal;
+      margin-top: 0;
+    }
+    a { color: black; }
+    #content {
+      width: 70%;
+      margin: auto;
+      padding: 80px 0;
+    }
+    #canvasholder {
+      float: left;
+      width: 512px;
+      height: 512px;
+      margin: auto;
+      border: 1px solid black;
+    }
+    #description { 
+      margin-left: 552px;
+    }
+    @media (max-width: 1000px) {
+      h1 { margin-top: 1em; }
+      #content { width: 95%; }
+      #canvasholder { float: none; }
+      #description { margin-left: 0px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content">
+    <div id="canvasholder"><canvas id="clock" width="512" height="512"></canvas></div>
+    <div id="description">
+      <h1>A patch of fuzz</h1>
+<p>
+This page houses a gallery of an almost infinite number of images.
+The curator, <a href="http://en.wikipedia.org/wiki/Universal_library" target="_blank">a universal image generator</a>, has the sole purpose of exhaustively displaying everything that can be displayed in this 32x32 4-bit space.
+</p><p>
+Although each image appears chaotic and random, the tiny bit of <a href="http://en.wikipedia.org/wiki/Linear_congruential_generator" target="_blank">math and code</a> that generates each frame guarantees that there are never any duplicates.
+The curator will display every possible image exactly once, and then halt.
+This task will take many times the predicted lifespan of the universe to complete.
+</p><p>
+Between the static, everything imaginable will eventually make an appearance.
+If you watch long enough, you will see:
+the face of everyone who has ever lived,
+true images of your birth and death,
+all false futures,
+the face of everyone who will never exist,
+messages only you can interpret,
+messages no one can interpret,
+infinite empty space,
+every spec of dust,
+<a href="http://en.wikipedia.org/wiki/Pale_Blue_Dot" target="_blank">a pale blue dot</a>,
+a patch of fuzz,
+and <a href="/dia/TheLibraryOfBabel.pdf" target="_blank">a lot more static</a>.
+</p>
+
+<!-- You will not see: true solutions to unsolvable problems. -->
+      </p>
+    </div>
+  </div>
+</body>
+</html>

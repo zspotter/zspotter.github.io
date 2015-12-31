@@ -1,0 +1,35 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:300);
+
+body {
+ font-family: 'Roboto', sans-serif;
+ font-size: 12pt;
+ text-align: center;
+ padding: 4em;
+}
+
+h1 {
+ font-weight: normal;
+ font-size: 20pt;
+}
+
+h2 {
+ font-weight: normal;
+ font-size: 15pt;
+}
+
+a { text-decoration: none; }
+a:link { color:#0066FF; }
+a:visited { color:#0066FF; }
+a:hover { color:#003D99; }
+
+#main {
+ width: 600px;
+ margin: 0 auto;
+ text-align: left;
+}
+
+.imglink .norm { display: inline; }
+.imglink:hover .norm { display: none; }
+
+.imglink .hov { display: none; }
+.imglink:hover .hov { display: inline; }

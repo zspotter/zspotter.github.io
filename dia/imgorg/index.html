@@ -1,0 +1,100 @@
+<canvas id="canvas" width="500" height="500">Organic Imagery</canvas>
+
+<script type="text/javascript">
+
+    R = 0;
+    G = 1;
+    B = 2;
+    A = 3;
+
+    canvas = document.getElementById("canvas");
+    context = canvas.getContext("2d");
+    
+    width = 0;
+    height = 0;
+    
+    grid = 0;
+    next = 0;
+    
+    running = false;
+    delay = 30;
+
+    img = new Image();
+    img.onload = function(ev) {
+    
+        width = img.width;
+        height = img.height;
+    
+        canvas.width = width;
+        canvas.height = height;
+        
+        context.drawImage(img, 0, 0);
+        
+        run();
+    };
+    
+    function run() {
+        grid = context.getImageData(0, 0, width, height);
+        next = context.getImageData(0, 0, width, height);
+        
+        running = true;
+        setTimeout(step, delay);
+    };
+    
+    function step() {
+        console.log("step");
+        // get new color for each pixel
+        for (y = 0; y < height; y++) {
+            for (x = 0; x < width; x++) {
+                newColor = stepPixel(x, y);
+
+                i = 4*(y*width + x);
+                next.data[i+R] = newColor[R];
+                next.data[i+G] = newColor[G];
+                next.data[i+B] = newColor[B];
+                next.data[i+A] = newColor[A];
+            }
+        }
+        
+        // Swap image data
+        temp = grid;
+        grid = next;
+        next = temp;
+        
+        // Draw new image
+        context.putImageData(grid, 0, 0);
+    
+        if (running) {
+            setTimeout(step, delay);
+        }
+    };
+    
+    function stepPixel(x, y) {
+        rx = x + 1 - (Math.random() * 3 | 0);
+        ry = y - (Math.random() * 2 | 0);
+        if (rx < 0) rx += width;
+        else if (rx >= width) rx -= width;
+        if (ry < 0) ry = 0;
+        
+        color = colorAt(rx, ry);
+        
+        /* invert
+        color[R] = 255 - color[R];
+        color[G] = 255 - color[G];
+        color[B] = 255 - color[B];
+        */
+        return color;
+    };
+    
+    function colorAt(x, y) {
+        i = 4*(y*canvas.width + x);
+        return [ grid.data[i+R],
+                 grid.data[i+G],
+                 grid.data[i+B],
+                 grid.data[i+A] ]
+    };
+    
+    // Load url
+    img.src = "img.jpg";
+
+</script>

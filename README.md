@@ -1,1 +1,1 @@
-# zspotter.github.io
+Please view from www.zspotter.me

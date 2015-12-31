@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Conway's Game of Life</title>
+    <script type="text/javascript" src="gameOfLife.js"></script>
+</head>
+
+<body>
+    <h>Conway's Game of Life</h>
+    <br>
+    <canvas id="gameBoard" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+    <br>
+    <button onClick="GOL.play(); document.getElementById('step').style.visibility='hidden';">play</button>
+    <button onClick="GOL.pause(); document.getElementById('step').style.visibility='visible';">pause</button>
+    <button id="step" onClick="GOL.step();">step</button>
+
+</body>
+</html>

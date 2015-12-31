@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wiki Diff</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta property="og:image" content="http://zspotter.me/dia/difi/preview.png">
+
+  <script type="text/javascript" src="mediawiki.js"></script>
+  <script type="text/javascript" src="difi.js"></script>
+
+  <link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      font-family: "Roboto", Helvetica, sans-serif;
+      margin: 1em;
+    }
+    a {
+      color: black;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+	.wide {
+      width: 60%;
+	  margin: auto;
+	  padding: 3em 0;
+	}
+
+    .diff-container h2 {
+      margin: 0.7em 0.5em;
+      text-align: center;
+    }
+    .diff-container ul {
+      list-style-type: none;
+      padding: 1em 0;
+      margin: 0 0.5em;
+      margin-bottom: 2em;
+    }
+    .diff-container li { padding-left: 1em; padding-bottom: 0.1em; }
+    .links-native ul { background: #A7FF7D; }
+    .links-common ul { background: #FFF07D; }
+    .links-foreign ul { background: #FFB77D; }
+
+    .lihead {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      padding: 0.5em 0;
+      background: white;
+      font-style: italic;
+    }
+
+    .spinner { height: 1.3em; vertical-align: bottom; visibility: hidden; }
+    .errormsg { color: red; visibility: hidden; }
+
+    .links-native { float: left; width: 33.333%; }
+    .links-foreign { float: right; width: 33.334%; }
+    .links-common { display: inline-block; width: 33.333%; }
+
+    @media (max-width: 750px) {
+	  .wide { width: 80%; }
+      .links-native { float: left; width: 100%; }
+      .links-foreign { float: left; width: 100%; }
+      .links-common { display: block; width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wide">
+    <h1>Wiki Diff</h1>
+	<p>Most of the 5 million English Wikipedia articles have translations in at least one other language.
+	   Between different languages, though, the same Wiki article might vary in format, completeness, or bias. This is a quick-and-dirty
+	   tool for seeing what content you're missing in your native language without needing to understand
+	   the 288 languages that Wikipedia supports.</p>
+
+	<p>Look up an English Wikipedia article and select a language to compare it to. In green are Wiki
+	   topics only mentioned in the English version of the article. In red are the topics only mentioned in the foreign version.
+	   In yellow are topics that are shared between the two languages.<br><br></p> 
+
+    <p style="display:none">Native Language: <select id="lang-native"></select></p>
+    <p>Wikipedia Article: <input id="title" type="text" value="Constructed Language"></input><button id="lookup">Lookup</button>
+      <img id="native-spinner" class="spinner" src="spin.gif"></img>
+      <span id="msg-notfound" class="errormsg">Page not found</span>
+    </p>
+
+    <p>Foreign Language: <select id="lang-foreign" disabled></select>
+      <img id="foreign-spinner" class="spinner" src="spin.gif"></img>
+      <span id="msg-noresult" class="errormsg">Couldn't fetch translation</span>
+    </p>
+
+  </div>
+  <div class="diff-container">
+    <div class="links-common">
+      <h2 id="heading-common">Common Links</h2>
+      <ul id="list-common"></ul>
+    </div>
+    <div class="links-foreign">
+      <h2 id="heading-foreign">Foreign Links</h2>
+      <ul id="list-foreign"></ul>
+    </div>
+    <div class="links-native">
+      <h2 id="heading-native">Native Links</h2>
+      <ul id="list-native"></ul>
+    </div>
+  </div>
+</body>
+</html>
