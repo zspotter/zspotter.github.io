@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<style>
+			html, body {
+				height: 100%;
+				width: 100%;
+				overflow: auto;
+				font-family: sans-serif;
+			}
+			body {
+				display: flex;
+				padding: 0;
+				margin: 0;
+			}
+			#canvasHolder {
+				flex: 1;
+				padding: 10px;
+			}
+			#wrappingCanvas {
+				height: 100%;
+			}
+
+			#menu {
+				position: absolute;
+				background: grey;
+				opacity: 0.45;
+				padding: 4px;
+			}
+			#menu:hover {
+				opacity: 0.85;
+			}
+			#imageSelection{
+				width: 100%;
+			}
+			#settings {
+				display: none;
+			}
+			#menu:hover #settings {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="canvasHolder">
+			<div id="menu">
+				▾&nbsp;<span id="scaleLabel"></span>
+				<div id="settings">
+					<select id="imageSelection">
+						<option value="babesgrowontrees.jpg">Jungle</option>
+						<option value="mountain.jpg">Mountain</option>
+						<option value="mbrot-bugs.jpg">Bugs</option>
+					</select>
+				</div>
+			</div>
+			<canvas id="wrappingCanvas"></canvas>
+		</div>
+		<script>
+			window.onload = function() {
+				var canvas = document.getElementById("wrappingCanvas");
+				var scaleLabel = document.getElementById("scaleLabel");
+				var imageSelection = document.getElementById("imageSelection");
+				var context = canvas.getContext("2d");
+				var img = new Image();
+				var srcData;
+
+				var dragZone = document.getElementById("canvasHolder");
+				dragZone.addEventListener("wheel", function(evt) {
+					if (evt.deltaY) {
+						resizeToWidth(canvas.width + evt.deltaY);
+					}
+				});
+
+				function resizeToWidth(w) {
+					w = Math.floor(w);
+					if (w <= 0) w = 1;
+					var h = Math.ceil(img.width * img.height / w);
+
+					var data = new Uint8ClampedArray(w * h * 4);
+					data.set(srcData.data);
+
+					var skewData = new ImageData(data, w, h);
+
+					canvas.width = skewData.width;
+					canvas.height = skewData.height;
+					context.putImageData(skewData, 0, 0);
+					updateScaleLabel();
+				}
+
+				function updateScaleLabel() {
+					scaleLabel.textContent = "Pixel scale " + (100 * canvas.scrollHeight / canvas.height).toPrecision(3) + "%";
+				}
+
+				function loadImage(path) {
+					img.onload = function() {
+						canvas.height = img.height;
+						canvas.width = img.width;
+						context.drawImage(img, 0, 0);
+
+						srcData = context.getImageData(0, 0, canvas.width, canvas.height);
+						updateScaleLabel();
+					};
+					img.src = path;
+				}
+
+				imageSelection.addEventListener("change", function(evt) {
+					loadImage(evt.target.value);
+				});
+				loadImage(imageSelection.value);
+			};
+
+			/*
+			var dragX = null;
+			var dragW = null;
+			dragZone.addEventListener("mousedown", function(evt) {
+				dragX = evt.screenX;
+				dragW = canvas.width;
+			}, false);
+			dragZone.addEventListener("mouseup", function() {
+				dragX = null;
+			}, false);
+			dragZone.addEventListener("mousemove", function(evt) {
+				if (dragX !== null) {
+					resizeToWidth(dragW + evt.screenX - dragX);
+				}
+			}, false);
+			*/
+		</script>
+	</body>
+</html>
