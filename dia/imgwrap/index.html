@@ -51,6 +51,7 @@
 						<option value="mountain.jpg">Mountain</option>
 						<option value="mbrot-bugs.jpg">Bugs</option>
 					</select>
+					<input type="file" id="customLoader" name="customLoader"/>
 				</div>
 			</div>
 			<canvas id="wrappingCanvas"></canvas>
@@ -91,7 +92,7 @@
 					scaleLabel.textContent = "Pixel scale " + (100 * canvas.scrollHeight / canvas.height).toPrecision(3) + "%";
 				}
 
-				function loadImage(path) {
+				function loadImage(imgSrc) {
 					img.onload = function() {
 						canvas.height = img.height;
 						canvas.width = img.width;
@@ -100,31 +101,25 @@
 						srcData = context.getImageData(0, 0, canvas.width, canvas.height);
 						updateScaleLabel();
 					};
-					img.src = path;
+					img.src = imgSrc;
 				}
 
 				imageSelection.addEventListener("change", function(evt) {
 					loadImage(evt.target.value);
 				});
 				loadImage(imageSelection.value);
-			};
 
-			/*
-			var dragX = null;
-			var dragW = null;
-			dragZone.addEventListener("mousedown", function(evt) {
-				dragX = evt.screenX;
-				dragW = canvas.width;
-			}, false);
-			dragZone.addEventListener("mouseup", function() {
-				dragX = null;
-			}, false);
-			dragZone.addEventListener("mousemove", function(evt) {
-				if (dragX !== null) {
-					resizeToWidth(dragW + evt.screenX - dragX);
+				var customLoader = document.getElementById('customLoader');
+				customLoader.addEventListener('change', loadLocalImage, false);
+
+				function loadLocalImage(e){
+					var reader = new FileReader();
+					reader.onload = function(event){
+						loadImage(event.target.result);
+					}
+					reader.readAsDataURL(e.target.files[0]);
 				}
-			}, false);
-			*/
+			};
 		</script>
 	</body>
 </html>
