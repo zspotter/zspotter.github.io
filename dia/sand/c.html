@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sand</title>
+	<meta charset="UTF-8">
+
+	<style>
+		html, body {
+			height: 100%;
+			width: 100%;
+			font-family: sans-serif;
+		}
+		#canvas {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
+	<script type="text/javascript" src="/paperjs-v0.10.2/dist/paper-full.js"></script>
+	<script type="text/paperscript" canvas="canvas">
+		var radius = 300;
+		function newWalker() {
+			var rand = 0.5*Math.random() + 0.5;
+			return {
+				line: new Path.Line({
+					from: mask.bounds.topLeft,
+					to: mask.bounds.topRight,
+					strokeColor: new Color(0, 0, 0, 0.2),
+					dashArray: [1, 5],
+					strokeWidth: 2,
+					strokeCap: 'round',
+					shadowColor: 'black',
+					shadowBlur: 2,
+				}),
+
+				lVelocity: new Point(0, 3 * rand),
+				rVelocity: new Point(0, 3 * rand),
+				rand: rand
+			};
+		}
+
+		function iterate(t) {
+			var newRaster = group.rasterize();
+			group.addChild(newRaster);
+			raster.remove();
+			raster = newRaster;
+
+			for (var i = 0; i < walkers.length; i++) {
+				var line = walkers[i].line;
+				var rand = walkers[i].rand;
+				line.firstSegment.point += walkers[i].lVelocity * rando(t + 200 * rand);
+				line.lastSegment.point += walkers[i].rVelocity * rando(t + 400 * rand);
+			}
+		}
+
+		function rando(t) {
+			return (Math.sin(t/(80*constant)) + 1) + Math.sin(t/55 + 30);
+		}
+
+		var group, mask, raster, walkers, constant;
+
+		function reset() {
+			project.clear();
+
+			constant = 0.5*Math.random() + 0.5;
+
+			mask = new Path.Circle({
+				center: view.center,
+				radius: radius,
+				strokeColor: 'black'
+			});
+
+			walkers = [];
+			var nWalkers = 1 + Math.floor(3 * Math.random());
+			for (var i = 0; i < nWalkers; i++) {
+				walkers.push(newWalker());
+			}
+
+			group = new Group(mask);
+			group.clipped = true;
+			for (var i = 0; i < walkers.length; i++) {
+				group.addChild(walkers[i].line);
+			}
+			
+			raster = group.rasterize();
+			group.addChild(raster);
+		}
+
+		reset();
+
+		function onFrame(event) {
+			iterate(event.count);
+			var anyIntersect = false;
+			for (var i = 0; i < walkers.length; i++) {
+				if (walkers[i].line.intersects(mask)) {
+					anyIntersect = true;
+					break;
+				}
+			}
+			if (!anyIntersect) {
+				view.pause();
+				setTimeout(function() {
+					reset();
+					view.play();
+				}, 5000);
+			}
+		}
+	</script>
+</head>
+<body>
+	<canvas id="canvas" resize></canvas>
+</body>
+</html>

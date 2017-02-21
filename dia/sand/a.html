@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sand</title>
+	<meta charset="UTF-8">
+
+	<style>
+		html, body {
+			height: 100%;
+			width: 100%;
+			font-family: sans-serif;
+		}
+		#canvas {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
+	<script type="text/javascript" src="/paperjs-v0.10.2/dist/paper-full.js"></script>
+	<script type="text/paperscript" canvas="canvas">
+		function newWalker() {
+			return {
+				line: new Path.Line({
+					from: new Point(0, view.size.height / 2),
+					to: new Point(view.size.width, view.size.height / 2),
+					center: view.center,
+					strokeColor: new Color(0, 0.1),
+					shadowColor: 'black',
+					shadowBlur: 5,
+					rotation: 90 * Math.random()
+				}),
+
+				lVelocity: Point.random() * 2 - 1,
+				rVelocity: Point.random() * 2 - 1
+			};
+		}
+
+		function iterate() {
+			var newRaster = group.rasterize();
+			group.addChild(newRaster);
+			raster.remove();
+			raster = newRaster;
+
+			for (var i = 0; i < walkers.length; i++) {
+				var line = walkers[i].line;
+				line.firstSegment.point += walkers[i].lVelocity + (Point.random() * 5 - 2.5);
+				line.lastSegment.point += walkers[i].rVelocity + (Point.random() * 5 - 2.5);
+			}
+		}
+
+		function rando(t) {
+			return 5*Math.sin(2*t) + 7*Math.sin(4*t) + 2*Math.sin(9*t);
+		}
+
+		var group, raster, walkers;
+
+		function reset() {
+			project.clear();
+
+			var mask = new Path.Circle({
+				center: view.center,
+				radius: 300,
+				fillColor: 'black'
+			});
+
+			walkers = [
+				newWalker(),
+				newWalker(),
+			];
+
+			group = new Group(mask);
+			for (var i = 0; i < walkers.length; i++) {
+				group.addChild(walkers[i].line);
+			}
+			group.clipped = true;
+			
+			raster = group.rasterize();
+			group.addChild(raster);
+		}
+
+		reset();
+
+		function onFrame(event) {
+			if (event.count % 500 == 0) reset();
+			iterate();
+		}
+	</script>
+</head>
+<body>
+	<canvas id="canvas" resize></canvas>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sand</title>
+	<meta charset="UTF-8">
+
+	<style>
+		html, body {
+			height: 100%;
+			width: 100%;
+			font-family: sans-serif;
+		}
+		#canvas {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
+	<script type="text/javascript" src="/paperjs-v0.10.2/dist/paper-full.js"></script>
+	<script type="text/paperscript" canvas="canvas">
+		var radius = 300;
+		settings.insertItems = false;
+
+		function newWalker() {
+			var rand = 0.5*Math.random() + 0.5;
+			return {
+				line: new Path.Line({
+					from: mask.bounds.topLeft,
+					to: mask.bounds.topRight,
+				}),
+
+				lVelocity: new Point(0, 3 * rand),
+				rVelocity: new Point(0, 3 * rand),
+				rand: rand
+			};
+		}
+
+		var stepSize = 1, jitter = 5;
+		function iterate(t) {
+			for (var i = 0; i < walkers.length; i++) {
+				var line = walkers[i].line;
+				var rand = walkers[i].rand;
+				line.firstSegment.point += walkers[i].lVelocity * rando(t + 200 * rand);
+				line.lastSegment.point += walkers[i].rVelocity * rando(t + 400 * rand);
+
+
+				var masked = line.intersect(mask).children[0];
+				if (!masked) continue;
+				for (var step = 0; step < masked.length / stepSize; step++) {
+					var point = masked.getPointAt(stepSize * step) + Point.random().multiply(jitter).subtract(jitter/2);
+					group.addChild(new Path.Circle({
+						center: point,
+						radius: 0.2 + Math.random(),
+						fillColor: new Color(0, 0, 0, 0.3),
+					}));
+				}
+				masked.remove();
+			}
+
+			var newRaster = group.rasterize();
+			group.removeChildren(1);
+			group.addChild(newRaster);
+		}
+
+		function rando(t) {
+			return (Math.sin(t/(80*constant)) + 1) + Math.sin(t/55 + 30);
+		}
+
+		var group, mask, walkers, constant;
+
+		function reset() {
+			project.clear();
+
+			constant = 0.5*Math.random() + 0.5;
+
+			mask = new Path.Circle({
+				center: view.center,
+				radius: radius,
+				// strokeColor: 'black'
+			});
+
+			walkers = [];
+			var nWalkers = 1 + Math.floor(3 * Math.random());
+			for (var i = 0; i < nWalkers; i++) {
+				walkers.push(newWalker());
+			}
+
+			group = new Group(mask);
+			// group.clipped = true;
+			
+			group.addChild(group.rasterize());
+			project.getActiveLayer().addChild(group);
+
+			// paper.project.layers[0].selected = true;
+		}
+
+		reset();
+
+		function onFrame(event) {
+			iterate(event.count);
+			var anyIntersect = false;
+			for (var i = 0; i < walkers.length; i++) {
+				if (walkers[i].line.intersects(mask)) {
+					anyIntersect = true;
+					break;
+				}
+			}
+			if (!anyIntersect) {
+				view.pause();
+				setTimeout(function() {
+					reset();
+					view.play();
+				}, 5000);
+			}
+		}
+	</script>
+</head>
+<body>
+	<canvas id="canvas" resize></canvas>
+</body>
+</html>
